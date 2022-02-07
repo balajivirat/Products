@@ -1,0 +1,203 @@
+
+<div class="container py-5">
+  <header class="text-center mb-5">
+    <h1 class="display-4 font-weight-bold">EIM Solutions</h1>
+  </header>
+
+
+  <div>
+    <h2 class="font-weight-bold mb-2">
+      Click Here to Add<span
+        class="btn btn-primary"
+        data-toggle="modal"
+        data-target="#addModal"
+        (click)="form()"
+        style="background-color: #28a745;
+        border-color: #28a745;"
+      >
+        ADD
+      </span>
+    </h2>
+  </div>
+
+  <div id="cards_landscape_wrap-2">
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12 col-sm-6 col-md-3 col-lg-3"  *ngFor="let product of products">
+                <a href="">
+
+                    <div class="card-flyer">
+                        <div class="text-box">
+
+                            <div class="image-box">
+
+                                <img
+                                [src]="product.prodImage"
+                                alt=""
+                               
+                              />
+                            </div>
+
+                            <div class="text-container">
+                              <div class="dropdown">
+                                <i class="fas fa-caret-square-down" style="color: #2e2c2c;" data-toggle="dropdown"></i>
+                                <div class="dropdown-menu">
+                                  <a
+                                    class="dropdown-item"
+                                    title="Edit"
+                                    (click)="openModal('update', product)"
+                                    data-toggle="modal" 
+                                    data-target="#addModal"
+                                  >
+                                    <span>Edit</span>
+                                  </a>
+                      
+                                  <a
+                                    class="dropdown-item delete-h"
+                                    title="Delete"
+                                    (click)="openModal('delete', product)"
+                                  >
+                                    <span>Remove</span>
+                                  </a>
+                                </div>
+                              </div>
+                                <h5>
+                                  <a href="#" class="text-dark">{{ product.prodName | titlecase }}</a>
+                                </h5>
+                                <h3 style="color: #2e2c2c;">
+                                  {{ product.prodPrice | currency: "INR":"symbol":"1.0-0" }}
+                                </h3>
+                                <p class="small text-muted font-italic">
+                                  {{ product.prodDes }}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+    </div>
+
+  <div *ngIf="!products.length" class="text-center">
+    <h4>No Products Available</h4>
+  </div>
+</div>
+
+<!-- Modal -->
+<div
+  class="modal fade"
+  id="addModal"
+  tabindex="-1"
+  role="dialog"
+  aria-labelledby="exampleModalLabel"
+  aria-hidden="true"
+>
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">
+          {{ Isupdating ? "Edit" : "Add" }}
+        </h5>
+        <button
+          type="button"
+          class="close"
+          data-dismiss="modal"
+          aria-label="Close"
+        >
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <form [formGroup]="productForm" (ngSubmit)="onSubmit()">
+          <div class="form-group">
+            <label for="prodName">Product Name</label>
+            <input
+              style="border-radius: 10px;"
+              type="text"
+              class="form-control"
+              id="prodName"
+              formControlName="prodName"
+              placeholder="Enter Product Name"
+            />
+            <div
+              style="color: red"
+              *ngIf="
+                !productForm.controls.prodName?.valid &&
+                (productForm.controls.prodName?.dirty ||
+                  productForm.controls.prodName?.touched)
+              "
+            >
+              * Please Enter Product Name.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="prodPrice">Product Price</label>
+            <input
+              style="border-radius: 10px;"
+              type="number"
+              class="form-control"
+              id="prodPrice"
+              placeholder="Enter Product Price"
+              formControlName="prodPrice"
+              min="0"
+            />
+            <div
+              style="color: red"
+              *ngIf="
+                !productForm.controls.prodPrice?.valid &&
+                (productForm.controls.prodPrice?.dirty ||
+                  productForm.controls.prodPrice?.touched)
+              "
+            >
+              * Please Enter Product Price.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="prodDes">Product Description</label>
+            <textarea
+              style="border-radius: 10px;"
+              class="form-control"
+              id="prodDes"
+              placeholder="Enter Product Description"
+              formControlName="prodDes"
+            ></textarea>
+            <div
+              style="color: red"
+              *ngIf="
+                !productForm.controls.prodDes?.valid &&
+                (productForm.controls.prodDes?.dirty ||
+                  productForm.controls.prodDes?.touched)
+              "
+            >
+              * Please Enter Product Description.
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="prodImage">Product Image</label>
+            <input
+              type="file"
+              class="form-control-file"
+              id="prodImage"
+              (change)="getBase64($event)"
+            />
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" style="background-color: #c73c4a;">
+          Close
+        </button>
+        <button
+          type="button"
+          class="btn btn-primary"
+          (click)="onSubmit()"
+          [disabled]="productForm.invalid || preventBtn"
+          style="background-color: #28a745;
+          border-color: #28a745;"
+        >
+          Done
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
